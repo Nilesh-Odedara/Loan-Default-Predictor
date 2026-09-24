@@ -20,7 +20,7 @@ import joblib
 # ──────────────────────────────────────────────────
 st.set_page_config(
     page_title="Loan Default Predictor",
-    page_icon="🏦",
+    page_icon="[LDP]",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -121,28 +121,28 @@ FEATURE_COLS = NUMERICAL_COLS + CATEGORICAL_KEYS
 
 MODEL_META = {
     "Logistic Regression": {
-        "icon":"📈","color":"#63b3ed",
+        "icon":"<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><polyline points='23 6 13.5 15.5 8.5 10.5 1 18'/><polyline points='17 6 23 6 23 12'/></svg>","color":"#63b3ed",
         "desc":"A linear probabilistic classifier that models the log-odds of default as a linear combination of input features. Fast, interpretable, and great as a baseline.",
         "pros":"Interpretable · Fast inference · Outputs probabilities",
         "cons":"Cannot capture non-linear relationships",
         "type":"Linear","complexity":"Low","supports_proba":True,
     },
     "K-Nearest Neighbors (KNN)": {
-        "icon":"🔵","color":"#9f7aea",
+        "icon":"<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#9f7aea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><circle cx='7.5' cy='7.5' r='1.5'/><circle cx='18.5' cy='5.5' r='1.5'/><circle cx='11.5' cy='11.5' r='1.5'/><circle cx='7.5' cy='16.5' r='1.5'/><circle cx='17.5' cy='14.5' r='1.5'/><circle cx='6.5' cy='20.5' r='1.5'/><circle cx='18.5' cy='20.5' r='1.5'/></svg>","color":"#9f7aea",
         "desc":"Classifies each sample by majority vote of its K nearest training neighbors in feature space. Non-parametric with no assumptions on data distribution.",
         "pros":"Simple · No explicit training · Adapts locally",
         "cons":"Slow on large datasets · Sensitive to feature scale",
         "type":"Instance-based","complexity":"Medium","supports_proba":True,
     },
     "Decision Tree": {
-        "icon":"🌳","color":"#68d391",
+        "icon":"<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#68d391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><line x1='6' y1='3' x2='6' y2='15'/><circle cx='18' cy='6' r='3'/><circle cx='6' cy='18' r='3'/><path d='M18 9a9 9 0 0 1-9 9'/></svg>","color":"#68d391",
         "desc":"Recursively partitions the feature space using if-else rules, forming an interpretable tree structure. Handles non-linear relationships naturally.",
         "pros":"Interpretable · Handles non-linearity · No scaling needed",
         "cons":"Prone to overfitting on noisy data",
         "type":"Tree-based","complexity":"Medium","supports_proba":True,
     },
     "Random Forest": {
-        "icon":"🌲","color":"#f6ad55",
+        "icon":"<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#f6ad55' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><polygon points='12 2 2 7 12 12 22 7 12 2'/><polyline points='2 17 12 22 22 17'/><polyline points='2 12 12 17 22 12'/></svg>","color":"#f6ad55",
         "desc":"An ensemble of decision trees trained on random subsets (bagging). Significantly reduces overfitting and variance compared to a single tree.",
         "pros":"High accuracy · Robust to noise · Feature importance",
         "cons":"Less interpretable · Slow to train on large datasets",
@@ -189,13 +189,81 @@ def bar(v, color="#3182ce"):
         f"</div>"
     )
 
+def svg(paths, color="#63b3ed", size=18):
+    """Build a Lucide-style SVG with single-quoted attrs — safe to embed in Python strings."""
+    return (
+        f"<svg xmlns='http://www.w3.org/2000/svg' "
+        f"width='{size}' height='{size}' viewBox='0 0 24 24' "
+        f"fill='none' stroke='{color}' stroke-width='2' "
+        f"stroke-linecap='round' stroke-linejoin='round' "
+        f"style='vertical-align:middle;display:inline;flex-shrink:0;'>"
+        f"{paths}</svg>"
+    )
+
+# Lucide icon path library (MIT licensed — https://lucide.dev)
+_ICON_PATHS = {
+    "check-circle": (
+        "<path d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/>"
+        "<polyline points='22 4 12 14.01 9 11.01'/>"
+    ),
+    "x-circle": (
+        "<circle cx='12' cy='12' r='10'/>"
+        "<line x1='15' y1='9' x2='9' y2='15'/>"
+        "<line x1='9' y1='9' x2='15' y2='15'/>"
+    ),
+    "alert-tri": (
+        "<path d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z'/>"
+        "<line x1='12' y1='9' x2='12' y2='13'/>"
+        "<line x1='12' y1='17' x2='12.01' y2='17'/>"
+    ),
+    "bank": (
+        "<rect x='3' y='9' width='18' height='11' rx='1'/>"
+        "<path d='M3 9l9-6 9 6'/>"
+        "<line x1='9' y1='9' x2='9' y2='20'/>"
+        "<line x1='15' y1='9' x2='15' y2='20'/>"
+    ),
+    "cpu": (
+        "<rect x='4' y='4' width='16' height='16' rx='2'/>"
+        "<rect x='9' y='9' width='6' height='6'/>"
+        "<line x1='9' y1='1' x2='9' y2='4'/><line x1='15' y1='1' x2='15' y2='4'/>"
+        "<line x1='9' y1='20' x2='9' y2='23'/><line x1='15' y1='20' x2='15' y2='23'/>"
+        "<line x1='20' y1='9' x2='23' y2='9'/><line x1='20' y1='14' x2='23' y2='14'/>"
+        "<line x1='1' y1='9' x2='4' y2='9'/><line x1='1' y1='14' x2='4' y2='14'/>"
+    ),
+    "trending-up": (
+        "<polyline points='23 6 13.5 15.5 8.5 10.5 1 18'/>"
+        "<polyline points='17 6 23 6 23 12'/>"
+    ),
+    "scatter": (
+        "<circle cx='7.5' cy='7.5' r='1.5'/><circle cx='18.5' cy='5.5' r='1.5'/>"
+        "<circle cx='11.5' cy='11.5' r='1.5'/><circle cx='7.5' cy='16.5' r='1.5'/>"
+        "<circle cx='17.5' cy='14.5' r='1.5'/><circle cx='6.5' cy='20.5' r='1.5'/>"
+        "<circle cx='18.5' cy='20.5' r='1.5'/>"
+    ),
+    "git-branch": (
+        "<line x1='6' y1='3' x2='6' y2='15'/>"
+        "<circle cx='18' cy='6' r='3'/><circle cx='6' cy='18' r='3'/>"
+        "<path d='M18 9a9 9 0 0 1-9 9'/>"
+    ),
+    "layers": (
+        "<polygon points='12 2 2 7 12 12 22 7 12 2'/>"
+        "<polyline points='2 17 12 22 22 17'/>"
+        "<polyline points='2 12 12 17 22 12'/>"
+    ),
+}
+
+def icon(name, color="#63b3ed", size=18):
+    """Return an inline Lucide SVG icon string by name."""
+    paths = _ICON_PATHS.get(name, _ICON_PATHS["alert-tri"])
+    return svg(paths, color, size)
+
 # ──────────────────────────────────────────────────
 #  SIDEBAR
 # ──────────────────────────────────────────────────
 with st.sidebar:
     st.markdown(
         "<div style='text-align:center;padding:1rem 0 .5rem;'>"
-        "<span style='font-size:3rem;'>🏦</span></div>",
+        "<span style='display:block;text-align:center;'><svg xmlns='http://www.w3.org/2000/svg' width='52' height='52' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><rect x='3' y='9' width='18' height='11' rx='1'/><path d='M3 9l9-6 9 6'/><line x1='9' y1='9' x2='9' y2='20'/><line x1='15' y1='9' x2='15' y2='20'/></svg></span></div>",
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -213,7 +281,7 @@ with st.sidebar:
     st.markdown(
         "<p style='color:#a0aec0;font-size:.78rem;font-weight:600;"
         "letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;'>"
-        "🤖  Select Model</p>",
+        "<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='#a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;'><rect x='4' y='4' width='16' height='16' rx='2'/><rect x='9' y='9' width='6' height='6'/><line x1='9' y1='1' x2='9' y2='4'/><line x1='15' y1='1' x2='15' y2='4'/><line x1='9' y1='20' x2='9' y2='23'/><line x1='15' y1='20' x2='15' y2='23'/><line x1='20' y1='9' x2='23' y2='9'/><line x1='20' y1='14' x2='23' y2='14'/><line x1='1' y1='9' x2='4' y2='9'/><line x1='1' y1='14' x2='4' y2='14'/></svg>  Select Model</p>",
         unsafe_allow_html=True,
     )
     selected_model_name = st.selectbox(
@@ -225,7 +293,7 @@ with st.sidebar:
     st.markdown(
         "<p style='color:#a0aec0;font-size:.78rem;font-weight:600;"
         "letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;'>"
-        "📋  About</p>",
+        "<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='#a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;'><path d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/><path d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/></svg>  About</p>",
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -241,14 +309,14 @@ with st.sidebar:
     st.markdown(
         "<p style='color:#a0aec0;font-size:.78rem;font-weight:600;"
         "letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem;'>"
-        "⚙️  Available Models</p>",
+        "<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='#a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'/></svg>  Available Models</p>",
         unsafe_allow_html=True,
     )
     metrics = load_metrics()
     for m in MODEL_PATHS:
         is_active = m == selected_model_name
         color = "#63b3ed" if is_active else "#4a5568"
-        active = "✅ " if is_active else "○ "
+        active = icon("check-circle","#63b3ed",13) + " " if is_active else "<span style='color:#4a5568;'>&bull;</span> "
         acc_tag = ""
         if metrics and m in metrics:
             acc_val = metrics[m]["accuracy"]
@@ -269,7 +337,7 @@ with st.sidebar:
 #  HERO HEADER
 # ──────────────────────────────────────────────────
 st.markdown(
-    "<div class='hero-title'>🏦 Loan Default Prediction</div>"
+    "<div class='hero-title'><span style='display:inline-block;vertical-align:middle;margin-right:.4rem;'><svg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><rect x='3' y='9' width='18' height='11' rx='1'/><path d='M3 9l9-6 9 6'/><line x1='9' y1='9' x2='9' y2='20'/><line x1='15' y1='9' x2='15' y2='20'/></svg></span> Loan Default Prediction</div>"
     "<div class='hero-sub'>Enter applicant information below and click "
     "<strong>Predict</strong> to get an instant risk assessment. "
     "Scroll down for full <strong>model performance analytics</strong>.</div>",
@@ -306,7 +374,7 @@ except Exception as e:
 #  INPUT FORM — Applicant Information
 # ──────────────────────────────────────────────────
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("<div class='section-title'>👤 Applicant Information</div>", unsafe_allow_html=True)
+st.markdown("<div class='section-title'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><circle cx='12' cy='8' r='4'/><path d='M20 21a8 8 0 0 0-16 0'/></svg> Applicant Information</div>", unsafe_allow_html=True)
 
 r1c1, r1c2, r1c3, r1c4 = st.columns(4)
 with r1c1:
@@ -341,7 +409,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 #  INPUT FORM — Financial Details
 # ──────────────────────────────────────────────────
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("<div class='section-title'>💳 Financial Details</div>", unsafe_allow_html=True)
+st.markdown("<div class='section-title'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><rect x='1' y='4' width='22' height='16' rx='2'/><line x1='1' y1='10' x2='23' y2='10'/></svg> Financial Details</div>", unsafe_allow_html=True)
 
 r3c1, r3c2, r3c3, r3c4 = st.columns(4)
 with r3c1:
@@ -408,11 +476,11 @@ def preprocess_input(raw_df: pd.DataFrame) -> np.ndarray:
 #  PREDICTION SECTION
 # ──────────────────────────────────────────────────
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("<div class='section-title'>🔍 Run Prediction</div>", unsafe_allow_html=True)
+st.markdown("<div class='section-title'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg> Run Prediction</div>", unsafe_allow_html=True)
 
 col_btn, col_note = st.columns([1, 2])
 with col_btn:
-    predict_clicked = st.button("🚀  Predict Loan Default")
+    predict_clicked = st.button("Predict Loan Default")
 with col_note:
     st.markdown(
         f"<div style='color:#718096;font-size:.85rem;padding-top:.85rem;'>"
@@ -440,7 +508,7 @@ if predict_clicked:
                     st.markdown(
                         "<div class='result-default'>"
                         "<div class='result-label' style='color:#fc8181;'>"
-                        "⚠️ Loan will likely be <u>Default</u></div>"
+                        "<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='#fc8181' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><path d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg> Loan will likely be <u>Default</u></div>"
                         "<div class='result-sub'>The model predicts a "
                         "<strong>HIGH</strong> risk of loan default.</div></div>",
                         unsafe_allow_html=True,
@@ -449,7 +517,7 @@ if predict_clicked:
                     st.markdown(
                         "<div class='result-no-default'>"
                         "<div class='result-label' style='color:#68d391;'>"
-                        "✅ Loan will likely be <u>No Default</u></div>"
+                        "<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='#68d391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><path d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/><polyline points='22 4 12 14.01 9 11.01'/></svg> Loan will likely be <u>No Default</u></div>"
                         "<div class='result-sub'>The model predicts a "
                         "<strong>LOW</strong> risk of loan default.</div></div>",
                         unsafe_allow_html=True,
@@ -459,7 +527,7 @@ if predict_clicked:
                     p_default    = float(proba[1])
                     p_no_default = float(proba[0])
                     st.markdown("<br>", unsafe_allow_html=True)
-                    st.markdown("<div class='section-title'>📊 Prediction Probabilities</div>",
+                    st.markdown("<div class='section-title'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><polyline points='22 12 18 12 15 21 9 3 6 12 2 12'/></svg> Prediction Probabilities</div>",
                                 unsafe_allow_html=True)
                     pc1, pc2 = st.columns(2)
                     with pc1:
@@ -479,7 +547,7 @@ if predict_clicked:
                         )
                         st.progress(p_no_default)
 
-                with st.expander("📋 View Submitted Input Data"):
+                with st.expander("<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><rect x='9' y='2' width='6' height='4' rx='1'/><path d='M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2'/></svg> View Submitted Input Data"):
                     display_df = pd.DataFrame({
                         "Feature": [
                             "Age","Income ($)","Loan Amount ($)","Credit Score",
@@ -509,7 +577,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ══════════════════════════════════════════════════
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown(
-    "<div class='hero-title' style='font-size:1.9rem;'>📊 Model Performance Dashboard</div>"
+    "<div class='hero-title' style='font-size:1.9rem;'><span style='display:inline-block;vertical-align:middle;margin-right:.4rem;'><svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><line x1='12' y1='20' x2='12' y2='10'/><line x1='18' y1='20' x2='18' y2='4'/><line x1='6' y1='20' x2='6' y2='16'/></svg></span> Model Performance Dashboard</div>"
     "<div class='hero-sub'>Evaluation metrics computed on the held-out test set "
     "(20% of 255,347 records · random_state=42)</div>",
     unsafe_allow_html=True,
@@ -525,7 +593,7 @@ if metrics is None:
 else:
     # ── 1. SUMMARY COMPARISON TABLE ──────────────────
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>📋 All Models — Side-by-Side Comparison</div>",
+    st.markdown("<div class='section-title'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><rect x='3' y='3' width='7' height='7'/><rect x='14' y='3' width='7' height='7'/><rect x='14' y='14' width='7' height='7'/><rect x='3' y='14' width='7' height='7'/></svg> All Models — Side-by-Side Comparison</div>",
                 unsafe_allow_html=True)
 
     # Build comparison dataframe
@@ -542,15 +610,8 @@ else:
 
     # Render as styled HTML table
     def render_comparison_table(df):
-        # Include Train Accuracy in the comparison table
-        col_labels = {
-            "train_accuracy":"Train Acc",
-            "accuracy":"Test Acc",
-            "precision":"Precision",
-            "recall":"Recall",
-            "f1":"F1-Score",
-            "roc_auc":"ROC-AUC",
-        }
+        col_labels = {"accuracy":"Accuracy","precision":"Precision",
+                      "recall":"Recall","f1":"F1-Score","roc_auc":"ROC-AUC"}
         html = "<table style='width:100%;border-collapse:collapse;'>"
         html += "<thead><tr>"
         html += "<th style='text-align:left;padding:.6rem 1rem;color:#63b3ed;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;background:rgba(99,179,237,.08);border-radius:8px 0 0 0;'>Model</th>"
@@ -558,44 +619,28 @@ else:
             html += f"<th style='text-align:center;padding:.6rem .8rem;color:#63b3ed;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;background:rgba(99,179,237,.08);'>{lab}</th>"
         html += "</tr></thead><tbody>"
 
-        # Find best per column (excluding train_accuracy from crown since 1.0 = overfitting)
+        # Find best per column
         bests = {}
         for k in col_labels:
-            if k == "train_accuracy":
-                continue
-            vals = [r.get(k) for r in rows if r.get(k) is not None]
+            vals = [r[k] for r in rows if r[k] is not None]
             bests[k] = max(vals) if vals else None
 
         for row in rows:
-            mname      = row["Model"]
-            meta       = MODEL_META.get(mname, {})
-            icon       = meta.get("icon","")
-            color      = meta.get("color","#63b3ed")
-            train_a    = row.get("train_accuracy")
-            test_a     = row.get("accuracy", 0)
-            overfit    = train_a is not None and train_a >= 0.99 and (train_a - (test_a or 0)) > 0.05
+            mname = row["Model"]
+            meta  = MODEL_META.get(mname, {})
+            icon  = meta.get("icon","")
+            color = meta.get("color","#63b3ed")
             html += "<tr>"
             html += (f"<td style='padding:.65rem 1rem;border-bottom:1px solid rgba(255,255,255,.05);'>"
                      f"<span style='font-size:1rem;'>{icon}</span> "
-                     f"<strong style='color:{color};'>{mname}</strong>"
-                     + (" <span style='background:rgba(246,173,85,.2);color:#f6ad55;border-radius:4px;padding:.05rem .4rem;font-size:.68rem;'>Overfit</span>" if overfit else "")
-                     + "</td>")
+                     f"<strong style='color:{color};'>{mname}</strong></td>")
             for k in col_labels:
                 val = row.get(k)
                 if val is None:
                     cell = "<span style='color:#4a5568;'>N/A</span>"
-                elif k == "train_accuracy" and val >= 0.99:
-                    # Flag perfect train accuracy as overfitting signal
-                    cell = f"<span class='score-pill' style='background:rgba(246,173,85,.15);color:#f6ad55;border:1px solid rgba(246,173,85,.3);'>{pct(val)} ⚠️</span>"
                 else:
-                    crown = " 👑" if val == bests.get(k) else ""
-                    # Dynamic colour: relative to per-column best instead of fixed thresholds
-                    best_v = bests.get(k)
-                    if best_v and best_v > 0:
-                        ratio = val / best_v
-                        cls = "score-high" if ratio >= 0.95 else ("score-mid" if ratio >= 0.75 else "score-low")
-                    else:
-                        cls = "score-mid"
+                    cls   = score_class(val)
+                    crown = " &#9733;" if val == bests.get(k) else ""
                     cell  = f"<span class='score-pill {cls}'>{pct(val)}{crown}</span>"
                 html += (f"<td style='text-align:center;padding:.65rem .8rem;"
                          f"border-bottom:1px solid rgba(255,255,255,.05);'>{cell}</td>")
@@ -607,16 +652,17 @@ else:
     st.markdown(render_comparison_table(rows), unsafe_allow_html=True)
     st.markdown(
         "<p style='color:#4a5568;font-size:.75rem;margin-top:.6rem;'>"
-        "👑 = Best test score in metric &nbsp;|&nbsp; "
-        "Colour is <em>relative</em> to best model (not absolute) &nbsp;|&nbsp; "
-        "⚠️ Train Acc = 100% signals overfitting</p>",
+        "&#9733; = Best score in that metric &nbsp;|&nbsp; "
+        "<span class='score-pill score-high'>≥80%</span> &nbsp;"
+        "<span class='score-pill score-mid'>60–80%</span> &nbsp;"
+        "<span class='score-pill score-low'>&lt;60%</span></p>",
         unsafe_allow_html=True,
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
     # ── 2. METRIC BAR CHARTS (Plotly) ────────────────
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>📈 Metric Comparison — Bar Charts</div>",
+    st.markdown("<div class='section-title'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><line x1='12' y1='20' x2='12' y2='10'/><line x1='18' y1='20' x2='18' y2='4'/><line x1='6' y1='20' x2='6' y2='16'/></svg> Metric Comparison — Bar Charts</div>",
                 unsafe_allow_html=True)
 
     try:
@@ -692,16 +738,23 @@ else:
 
     # ── 3. INDIVIDUAL MODEL CARDS WITH CONFUSION MATRIX ──
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>🗂️ Individual Model Details & Confusion Matrix</div>",
+    st.markdown("<div class='section-title'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><polygon points='12 2 2 7 12 12 22 7 12 2'/><polyline points='2 17 12 22 22 17'/><polyline points='2 12 12 17 22 12'/></svg> Individual Model Details & Confusion Matrix</div>",
                 unsafe_allow_html=True)
 
-    tabs = st.tabs([f"{MODEL_META[n]['icon']} {n}" for n in metrics])
+    # Tab labels must be plain text — st.tabs() does not support HTML/SVG
+    _TAB_LABELS = {
+        "Logistic Regression":       "Logistic Regression",
+        "K-Nearest Neighbors (KNN)": "KNN",
+        "Decision Tree":             "Decision Tree",
+        "Random Forest":             "Random Forest",
+    }
+    tabs = st.tabs([_TAB_LABELS.get(n, n) for n in metrics])
     for tab, (mname, mdata) in zip(tabs, metrics.items()):
         with tab:
             meta = MODEL_META.get(mname, {})
             color = meta.get("color","#63b3ed")
 
-            # ── Overfitting alert ──────────────────────────
+            # ── Overfitting alert ──────────────────────────────────
             train_acc = mdata.get("train_accuracy")
             test_acc  = mdata.get("accuracy", 0)
             if train_acc is not None and train_acc >= 0.99 and (train_acc - test_acc) > 0.05:
@@ -709,7 +762,8 @@ else:
                 st.markdown(
                     f"<div style='background:rgba(246,173,85,.12);border:1px solid rgba(246,173,85,.35);"
                     f"border-radius:10px;padding:.7rem 1rem;margin-bottom:.8rem;font-size:.83rem;'>"
-                    f"⚠️ <strong style='color:#f6ad55;'>Overfitting Detected</strong> — "
+                    + icon("alert-tri","#f6ad55",15)
+                    + f" <strong style='color:#f6ad55;'>Overfitting Detected</strong> &mdash; "
                     f"Training accuracy: <strong>{train_acc:.1%}</strong> vs "
                     f"Test accuracy: <strong>{test_acc:.1%}</strong> "
                     f"(gap: <strong style='color:#fc8181;'>{gap:.1%}</strong>). "
@@ -717,7 +771,7 @@ else:
                     unsafe_allow_html=True,
                 )
 
-            # ── Top row: 6 metric tiles ─────────────────────
+            # ── 6 metric tiles ─────────────────────────────────────
             tc1,tc2,tc3,tc4,tc5,tc6 = st.columns(6)
             tile_defs = [
                 (tc1, "Train Acc",  mdata.get("train_accuracy"), "#4a9eca"),
@@ -751,7 +805,7 @@ else:
 
                 st.markdown(
                     "<p style='color:#a0aec0;font-size:.85rem;font-weight:600;margin-bottom:.6rem;'>"
-                    "🔲 Confusion Matrix</p>",
+                    "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><rect x='3' y='3' width='7' height='7'/><rect x='14' y='3' width='7' height='7'/><rect x='14' y='14' width='7' height='7'/><rect x='3' y='14' width='7' height='7'/></svg> Confusion Matrix</p>",
                     unsafe_allow_html=True,
                 )
                 cm_html = f"""
@@ -803,10 +857,10 @@ else:
                     f"padding:.2rem .7rem;font-size:.75rem;'>Proba: {'Yes' if meta.get('supports_proba') else 'No'}</span>"
                     f"</div>"
                     f"<div style='font-size:.8rem;margin-bottom:.3rem;'>"
-                    f"<span style='color:#68d391;'>✔ Strengths:</span> "
+                    f"<span style='color:#68d391;'><svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='#68d391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><path d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/><polyline points='22 4 12 14.01 9 11.01'/></svg> Strengths:</span> "
                     f"<span style='color:#a0aec0;'>{meta.get('pros','')}</span></div>"
                     f"<div style='font-size:.8rem;'>"
-                    f"<span style='color:#fc8181;'>✖ Weaknesses:</span> "
+                    f"<span style='color:#fc8181;'><svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='#fc8181' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><circle cx='12' cy='12' r='10'/><line x1='15' y1='9' x2='9' y2='15'/><line x1='9' y1='9' x2='15' y2='15'/></svg> Weaknesses:</span> "
                     f"<span style='color:#a0aec0;'>{meta.get('cons','')}</span></div>"
                     f"</div>",
                     unsafe_allow_html=True,
@@ -837,7 +891,7 @@ else:
 
     # ── 4. DATASET INFO ──────────────────────────────
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>📌 Project Notes & Dataset Info</div>",
+    st.markdown("<div class='section-title'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#63b3ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;display:inline;flex-shrink:0;'><line x1='12' y1='17' x2='12' y2='22'/><path d='M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z'/></svg> Project Notes & Dataset Info</div>",
                 unsafe_allow_html=True)
 
     n1, n2, n3 = st.columns(3)
@@ -869,7 +923,7 @@ else:
 
     st.markdown(
         "<div style='color:#4a5568;font-size:.78rem;margin-top:.5rem;text-align:center;'>"
-        "⚡ All models loaded from pre-trained <code>.pkl</code> files. "
+        "All models loaded from pre-trained <code>.pkl</code> files. "
         "No retraining occurs in this application.</div>",
         unsafe_allow_html=True,
     )
