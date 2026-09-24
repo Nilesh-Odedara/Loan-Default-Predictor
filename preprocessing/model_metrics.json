@@ -1,0 +1,66 @@
+{
+  "Logistic Regression": {
+    "accuracy": 0.6742,
+    "train_accuracy": 0.6731,
+    "precision": 0.2189,
+    "recall": 0.7031,
+    "f1": 0.3339,
+    "roc_auc": 0.7498,
+    "confusion_matrix": {
+      "tn": 30263,
+      "fp": 14876,
+      "fn": 1761,
+      "tp": 4170
+    },
+    "test_samples": 51070,
+    "default_rate": 0.1161
+  },
+  "K-Nearest Neighbors (KNN)": {
+    "accuracy": 0.8752,
+    "train_accuracy": 1.0,
+    "precision": 0.272,
+    "recall": 0.0443,
+    "f1": 0.0763,
+    "roc_auc": 0.5899,
+    "confusion_matrix": {
+      "tn": 44435,
+      "fp": 704,
+      "fn": 5668,
+      "tp": 263
+    },
+    "test_samples": 51070,
+    "default_rate": 0.1161
+  },
+  "Decision Tree": {
+    "accuracy": 0.8174,
+    "train_accuracy": 1.0,
+    "precision": 0.2044,
+    "recall": 0.1978,
+    "f1": 0.201,
+    "roc_auc": 0.5483,
+    "confusion_matrix": {
+      "tn": 40573,
+      "fp": 4566,
+      "fn": 4758,
+      "tp": 1173
+    },
+    "test_samples": 51070,
+    "default_rate": 0.1161
+  },
+  "Random Forest": {
+    "accuracy": 0.8854,
+    "train_accuracy": 1.0,
+    "precision": 0.6512,
+    "recall": 0.0283,
+    "f1": 0.0543,
+    "roc_auc": 0.7343,
+    "confusion_matrix": {
+      "tn": 45049,
+      "fp": 90,
+      "fn": 5763,
+      "tp": 168
+    },
+    "test_samples": 51070,
+    "default_rate": 0.1161
+  }
+}
